@@ -41,8 +41,8 @@ const columnsSlice = createSlice({
         deleteTask: (state, action) => {
             const currentState = current(state.columns)
             const currentColumnByIndex = currentState.findIndex((column) => column.id === action.payload.parentId)
-            const newCols = currentState[currentColumnByIndex].tasks?.filter((task) => task.id !== action.payload.id)
-            console.log(newCols, "newCols");
+            const filteredTasks = currentState[currentColumnByIndex].tasks?.findIndex((task) => task.id === action.payload.id)
+            state.columns[currentColumnByIndex].tasks?.splice(filteredTasks, 1)
         }
     }
 })
