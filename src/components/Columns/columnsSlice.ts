@@ -43,11 +43,17 @@ const columnsSlice = createSlice({
             const currentColumnByIndex = currentState.findIndex((column) => column.id === action.payload.parentId)
             const filteredTasks = currentState[currentColumnByIndex].tasks?.findIndex((task) => task.id === action.payload.id)
             state.columns[currentColumnByIndex].tasks?.splice(filteredTasks, 1)
+        },
+        deleteColumn: (state, action) => {
+            const currentState = current(state.columns)
+            const currentColumnByIndex = currentState.findIndex((column) => column.id === action.payload.parentId)
+            state.columns.splice(currentColumnByIndex, 1)
+
         }
     }
 })
 
-export const {addColumn, addTaskColumn, deleteTask} = columnsSlice.actions
+export const {addColumn, addTaskColumn, deleteTask,deleteColumn} = columnsSlice.actions
 export const selectColumns = (state: RootState) => state.columns.columns;
 
 export default columnsSlice.reducer;
