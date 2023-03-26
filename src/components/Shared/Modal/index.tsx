@@ -1,12 +1,14 @@
 import React from "react";
 import {SubmitHandler} from "react-hook-form";
-import TaskForm from "../../Task/TaskForm";
-import {TaskFormValues} from "../../Task/TaskForm/interface";
-import ColumnForm from "../../Columns/Column/ColumnForm";
+import TaskForm from "../../Task/AddTaskForm";
+import {TaskFormValues} from "../../Task/AddTaskForm/interface";
 import {ColumnFormValues, IColumn} from "../../Columns/Column/interface";
 import {useAppDispatch} from "../../../app/hooks";
-import {addColumn, addTaskColumn} from "../../Columns/columnsSlice";
+import {addColumn, addTask, editColumn, editTask} from "../../Columns/columnsSlice";
 import uuid from "react-uuid";
+import AddColumnForm from "../../Columns/Column/AddColumnForm";
+import EditColumnForm from "../../Columns/Column/EditColumnForm";
+import EditTaskForm from "../../Task/EditTaskForm";
 
 interface IModal {
     title?: string;
@@ -14,13 +16,34 @@ interface IModal {
     columnActive?: boolean;
     taskActive?: boolean;
     setShowModal: (boolean: boolean) => void;
-    column?: IColumn
+    column?: IColumn;
+    columnEdit?: boolean;
+    setColumnEdit?: (boolean: boolean) => void;
+    columnId?: string;
+    setTaskEdit?: (boolean: boolean) => void;
+    taskEdit?: boolean;
+    taskId?: string;
+    parentId?: string
 }
 
-const Modal: React.FC<IModal> = ({showModal, setShowModal, taskActive, columnActive, title, column}) => {
+const Modal: React.FC<IModal> = ({
+                                     showModal,
+                                     setShowModal,
+                                     taskActive,
+                                     columnActive,
+                                     title,
+                                     column,
+                                     columnEdit,
+                                     setColumnEdit,
+                                     columnId,
+                                     setTaskEdit,
+                                     taskEdit,
+                                     taskId,
+                                     parentId
+                                 }) => {
     const dispatch = useAppDispatch()
     const onTaskSubmit: SubmitHandler<TaskFormValues> = (data) => {
-        dispatch(addTaskColumn({
+        dispatch(addTask({
             id: uuid(),
             name: data.name,
             parentId: column?.id,
@@ -36,7 +59,26 @@ const Modal: React.FC<IModal> = ({showModal, setShowModal, taskActive, columnAct
         setShowModal(false)
     };
 
-    const formId = taskActive ? "task-form" : "column-form"
+    const editColumnSubmit: SubmitHandler<ColumnFormValues> = (data) => {
+        dispatch(editColumn({
+            id: columnId,
+            name: data.columnType,
+        }))
+        setShowModal(false)
+        setColumnEdit?.(false)
+    }
+
+    const editTaskSubmit: SubmitHandler<TaskFormValues> = (data) => {
+        dispatch(editTask({
+            id: taskId,
+            parentId: parentId,
+            name: data.name,
+        }))
+        setShowModal(false)
+        setTaskEdit?.(false)
+    }
+
+    const formId = taskActive || taskEdit ? "task-form" : "column-form"
 
     return (
         <>
@@ -64,15 +106,21 @@ const Modal: React.FC<IModal> = ({showModal, setShowModal, taskActive, columnAct
                                     </button>
                                 </div>
                                 <div className="relative p-6 flex-auto">
-                                    {columnActive && <ColumnForm onSubmit={onColumnSubmit}/>}
-                                    {taskActive && <TaskForm onSubmit={onTaskSubmit}/>}
+                                    {columnActive && !columnEdit && <AddColumnForm onSubmit={onColumnSubmit}/>}
+                                    {columnEdit && <EditColumnForm onSubmit={editColumnSubmit}/>}
+                                    {taskActive && !taskEdit && <TaskForm onSubmit={onTaskSubmit}/>}
+                                    {taskEdit && <EditTaskForm onSubmit={editTaskSubmit}/>}
                                 </div>
                                 <div
                                     className="flex items-center justify-end p-6 border-t border-solid border-slate-200 rounded-b">
                                     <button
                                         className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                         type="button"
-                                        onClick={() => setShowModal(false)}
+                                        onClick={() => {
+                                            setShowModal(false)
+                                            setColumnEdit?.(false)
+                                            setTaskEdit?.(false)
+                                        }}
                                     >
                                         Close
                                     </button>
@@ -87,7 +135,7 @@ const Modal: React.FC<IModal> = ({showModal, setShowModal, taskActive, columnAct
                             </div>
                         </div>
                     </div>
-                    <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+                    <div className="opacity-25 fixed inset-0 z-40 bg-black"/>
                 </>
             ) : null}
         </>

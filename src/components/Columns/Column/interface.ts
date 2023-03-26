@@ -1,4 +1,4 @@
-import {ITask} from "../../Task/TaskForm/interface";
+import {ITask} from "../../Task/AddTaskForm/interface";
 
 
 export interface IColumn {

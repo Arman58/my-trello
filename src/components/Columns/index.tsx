@@ -4,13 +4,19 @@ import {GrAdd} from "@react-icons/all-files/gr/GrAdd";
 import {deleteColumn, selectColumns} from "./columnsSlice";
 import {useAppDispatch, useAppSelector} from "../../app/hooks";
 import Modal from "../Shared/Modal";
+import {AiFillEdit} from "@react-icons/all-files/ai/AiFillEdit";
+import {TiDelete} from "@react-icons/all-files/ti/TiDelete";
 
 
 const Columns = () => {
     const [showModal, setShowModal] = React.useState(false);
     const [columnActive, setColumnActive] = React.useState(false);
+    const [columnEdit, setColumnEdit] = React.useState(false);
+    const [columnId, setColumnId] = React.useState<string>("");
     const columns = useAppSelector(selectColumns)
     const dispatch = useAppDispatch()
+
+    const columnTitle = columnEdit ? "edit column" : "add column"
 
     const handleClick = () => {
         setShowModal(true)
@@ -18,30 +24,37 @@ const Columns = () => {
     }
 
     const handleDelete = (id: string) => {
-        dispatch(deleteColumn(id))
+        dispatch(deleteColumn({parentId:id}))
+    }
+    const handleEdit = (id: string) => {
+        setShowModal(true)
+        setColumnEdit(true)
+        setColumnId(id)
     }
 
     return (
         <div className="w-full h-screen flex items-center justify-center gap-x-[20px]">
             {columns.map((data, index) => {
                     return (
-                        <div key={index} className="flex items-start justify-center ">
+                        <div key={index} className="flex items-start justify-center">
                             <div className="flex items-start justify-center">
                                 <Column column={data}/>
                                 <span className="text-rose-700 cursor-pointer"
-                                      onClick={() => handleDelete(data.id)}>X</span>
+                                      onClick={() => handleDelete(data.id)}><TiDelete/></span>
+                                <span className="cursor-pointer" onClick={() => handleEdit(data.id)}><AiFillEdit/></span>
                             </div>
                             {columns.length - 1 === index &&
-                                <button className="bg-customGray p-2 cursor-pointer ml-3"
-                                        onClick={handleClick}>
-                                    <GrAdd/>
-                                </button>
+                            <button className="bg-customGray p-2 cursor-pointer ml-3"
+                                    onClick={handleClick}>
+                                <GrAdd/>
+                            </button>
                             }
                         </div>
                     )
                 }
             )}
-            <Modal showModal={showModal} setShowModal={setShowModal} columnActive={columnActive} title="Add Column"/>
+            <Modal showModal={showModal} setShowModal={setShowModal} columnActive={columnActive} title={columnTitle}
+                   columnEdit={columnEdit} setColumnEdit={setColumnEdit} columnId={columnId}/>
         </div>
     )
 }

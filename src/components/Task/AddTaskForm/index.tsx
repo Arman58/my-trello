@@ -3,7 +3,7 @@ import { useForm} from "react-hook-form";
 import {ITaskFormProps, TaskFormValues} from "./interface";
 
 
-const TaskForm: React.FC<ITaskFormProps> = ({onSubmit}) => {
+const AddTaskForm: React.FC<ITaskFormProps> = ({onSubmit}) => {
 
     const {register, handleSubmit, formState: {errors}} = useForm<TaskFormValues>();
 
@@ -15,4 +15,4 @@ const TaskForm: React.FC<ITaskFormProps> = ({onSubmit}) => {
     )
 }
 
-export default TaskForm
+export default AddTaskForm
