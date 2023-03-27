@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Column from "./Column";
 import {GrAdd} from "@react-icons/all-files/gr/GrAdd";
 import {deleteColumn, draggableEnd, selectColumns} from "./columnsSlice";
@@ -11,11 +11,10 @@ import {IColumn} from "./Column/interface";
 
 
 const Columns = () => {
-
-    const [showModal, setShowModal] = React.useState(false);
-    const [columnActive, setColumnActive] = React.useState(false);
-    const [columnEdit, setColumnEdit] = React.useState(false);
-    const [columnId, setColumnId] = React.useState<string>("");
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [columnActive, setColumnActive] = useState<boolean>(false);
+    const [columnEdit, setColumnEdit] = useState<boolean>(false);
+    const [columnId, setColumnId] = useState<string>("");
     const columns = useAppSelector(selectColumns)
     const dispatch = useAppDispatch()
     const columnTitle = columnEdit ? "edit column" : "add column"
@@ -43,7 +42,7 @@ const Columns = () => {
             <DragDropContext
                 onDragEnd={result => onDragEnd(result, columns)}
             >
-                {columns.map((column, index) => {
+                {columns.map((column: IColumn, index: number) => {
                         return (
                             <div key={column.id} className="flex items-start justify-center">
                                 <div className="flex items-start justify-center">

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {IColumn} from "./interface";
 import {GrAdd} from "@react-icons/all-files/gr/GrAdd";
 import Modal from "../../Shared/Modal";
@@ -7,16 +7,15 @@ import {Draggable, Droppable} from "react-beautiful-dnd";
 
 
 const Column = ({column}: { column: IColumn }) => {
-    const [showModal, setShowModal] = React.useState(false);
-    const [taskActive, setTaskActive] = React.useState(false);
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [taskActive, setTaskActive] = useState<boolean>(false);
 
     const handleClick = () => {
         setShowModal(true)
         setTaskActive(true)
     }
     return (
-        <>
-        <div className="w-[270px] min-h-[348px] bg-customGray p-4">
+        <div>
             <div className="text-4xl font-black">{column.columnType}</div>
             <Droppable droppableId={column.id} key={column.id}>
                 {(provided, snapshot) => {
@@ -24,14 +23,7 @@ const Column = ({column}: { column: IColumn }) => {
                         <div
                             {...provided.droppableProps}
                             ref={provided.innerRef}
-                            style={{
-                                background: snapshot.isDraggingOver
-                                    ? "lightblue"
-                                    : "lightgrey",
-                                padding: 4,
-                                width: 250,
-                                minHeight: 500
-                            }}
+                            className={`w-[300px] min-h-[500px] p-4 ${snapshot.isDraggingOver ? 'bg-sky-200' : 'bg-gray-300'}`}
                         >
                             {column?.tasks && column.tasks.map((task, index) => {
                                 return (
@@ -75,7 +67,6 @@ const Column = ({column}: { column: IColumn }) => {
             <Modal showModal={showModal} setShowModal={setShowModal} taskActive={taskActive} title="Add Task"
                    column={column}/>
         </div>
-        </>
     )
 }
 

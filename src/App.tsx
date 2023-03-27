@@ -1,7 +1,7 @@
-import React from 'react';
 import Columns from "./components/Columns";
+import React from "react";
 
-const App = () => {
+const App:React.FC = () => {
 
     return (
         <div className="flex items-center justify-center">
